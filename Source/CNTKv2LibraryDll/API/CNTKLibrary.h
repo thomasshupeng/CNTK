@@ -5185,6 +5185,7 @@ namespace CNTK
         const AccumulatorPtr m_aggregatedTestEvalCriterionValue;
         Variable             m_testSampleCountVar;
         FunctionPtr          m_combinedEvalFunction;
+        DistributedCommunicatorPtr m_communicator;
     };
 
     ///
