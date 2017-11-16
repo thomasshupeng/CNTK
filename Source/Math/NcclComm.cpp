@@ -31,6 +31,8 @@ ncclRedOp_t ncclRedOpFromMpiOp(MPI_Op op)
 NcclComm::NcclComm(int deviceId, const MPIWrapperPtr& mpi)
     : m_ncclComm(nullptr), m_stream(nullptr)
 {
+    if (deviceId < 0) return; // don't init NCCL for CPU device
+
     cudaDeviceSynchronize();
     size_t numRanks = mpi->NumNodesInUse();
     std::vector<int> allDevs(numRanks);
