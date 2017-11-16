@@ -128,9 +128,7 @@ namespace CNTK
 
             auto values = std::vector<NDArrayViewPtr>{ result.first->Data(), MakeSharedObject<NDArrayView>(NDShape{}, &localSampleCount, 1, DeviceDescriptor::CPUDevice()) };
             if (!m_communicator)
-            {
                 m_communicator = MPICommunicator();
-            }
 
             m_communicator->AggregateInPlace(values, m_communicator->Workers());
 

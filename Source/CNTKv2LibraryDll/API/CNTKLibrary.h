@@ -5159,6 +5159,14 @@ namespace CNTK
     protected:
         Evaluator(const FunctionPtr& evaluationFunction, const std::vector<ProgressWriterPtr>& progressWriters = {}, bool initializeCombined = true);
 
+        void SetCommunicator(DistributedCommunicatorPtr communicator)
+        {
+            if (m_communicator != nullptr)
+                LogicError("Communicator has already been initialized.");
+
+            m_communicator = communicator;
+        }
+
         // Helper functions.
         std::vector<Variable> GetCombinedEvalFunctionArgs() const;
         static size_t GetSampleCount(const Variable& var, const ValuePtr& value);
