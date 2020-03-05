@@ -35,7 +35,7 @@ typedef void* CNTK_ModelHandle;
 typedef struct CNTK_StatusCode
 {
     int32_t value;
-    wchar_t description[CNTK_STATUSCODE_DescriptionSize];
+    char description[CNTK_STATUSCODE_DescriptionSize];
 } CNTK_StatusCode;
 
 //
@@ -105,7 +105,23 @@ CNTK_API CNTK_StatusCode CNTK_DefaultDevice(
 //     model [out]: the resulting loaded model
 //
 CNTK_API CNTK_StatusCode CNTK_LoadModel(
-    /*[in]*/ const wchar_t* modelFilePath,
+    /*[in]*/ const char* modelFilePath,
+    /*[in]*/ const CNTK_DeviceDescriptor* device,
+    /*[out]*/ CNTK_ModelHandle* model);
+
+//
+// Loads a model from the specified buffer and returns an opaque handle to the model
+// that should be passed to further operations.
+//
+// Parameters:
+//     modelData [in]: a buffer that holds the CNTK model
+//     modelDataLen [in]: the length of the buffer
+//     device [in]: device descriptor
+//     model [out]: the resulting loaded model
+//
+CNTK_StatusCode CNTK_LoadModel_FromArray(
+    /*[in]*/ const void* modelData,
+    /*[in]*/ int modelDataLen,
     /*[in]*/ const CNTK_DeviceDescriptor* device,
     /*[out]*/ CNTK_ModelHandle* model);
 
@@ -167,7 +183,7 @@ typedef struct CNTK_Shape
 //
 typedef struct CNTK_Variable
 {
-    wchar_t* name;     // A null terminating name of the variable
+    char* name;     // A null terminating name of the variable
     CNTK_Shape shape;  // Variable shape
 } CNTK_Variable;
 

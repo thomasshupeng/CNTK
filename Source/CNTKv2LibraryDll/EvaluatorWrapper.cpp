@@ -18,18 +18,26 @@ namespace CNTK
         : m_func(model), m_device(device)
     {
         for (const auto arg : m_func->Arguments())
-            m_arguments.insert(make_pair(arg.Name(), arg));
+            m_arguments.insert(make_pair(WStringToString(arg.Name()), arg));
 
         for (const auto arg : m_func->Outputs())
-            m_outputs.insert(make_pair(arg.Name(), arg));
+            m_outputs.insert(make_pair(WStringToString(arg.Name()), arg));
     }
 
-    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const wchar_t* modelFilePath, DeviceDescriptor device) :
-        CNTKEvaluatorWrapper(Function::Load(modelFilePath, device), device)
+    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const char* modelFilePath, DeviceDescriptor device) :
+        CNTKEvaluatorWrapper(Function::Load(StringToWString(modelFilePath), device), device)
     {}
 
-    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const wchar_t* modelFilePath, const CNTK_DeviceDescriptor* device) :
+    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const char* modelFilePath, const CNTK_DeviceDescriptor* device) :
         CNTKEvaluatorWrapper(modelFilePath, GetDeviceDescriptor(device))
+    {}
+
+    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const void* modelData, int modelDataLen, DeviceDescriptor device) :
+        CNTKEvaluatorWrapper(Function::Load(static_cast<const char*>(modelData), modelDataLen, device), device)
+    {}
+
+    CNTKEvaluatorWrapper::CNTKEvaluatorWrapper(const void* modelData, int modelDataLen, const CNTK_DeviceDescriptor* device) :
+        CNTKEvaluatorWrapper(modelData, modelDataLen, GetDeviceDescriptor(device))
     {}
 
     void CNTKEvaluatorWrapper::GetModelArgumentsInfo(CNTK_Variable** inputs, uint32_t* numInputs)
@@ -111,7 +119,7 @@ namespace CNTK
 
             auto varToValue = preparedOutputs.find(var->second);
             if (varToValue == preparedOutputs.end())
-                RuntimeError("Could not retrieve ouput for variable '%ls'", outputs[i].name);
+                RuntimeError("Could not retrieve ouput for variable '%s'", outputs[i].name);
 
             auto value = varToValue->second;
 
